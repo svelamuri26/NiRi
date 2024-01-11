@@ -14,9 +14,6 @@ public class NiRiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(NiRiApplication.class, args);
 
-		String url = "jdbc:mysql://localhost:3306/NiRi";
-		String username = "root";
-		String password = "niri2214";
 
 
 

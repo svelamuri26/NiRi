@@ -1,5 +1,7 @@
 package com.example.NiRi;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 public class UserDTO {
     private String name;
     private String email;
@@ -39,4 +41,5 @@ public class UserDTO {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }
