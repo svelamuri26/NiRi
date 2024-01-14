@@ -1,3 +1,4 @@
+
 package com.example.NiRi;
 
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.ExpectedCount.times;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -44,6 +49,16 @@ public class UserServiceTest {
 
         assertEquals(userList, result);
     }
+    @Test
+    public void testSaveUser() {
+        User userToSave = new User("Test User", "test@example.com", "testPassword");
+        when(userRepository.save(any(User.class))).thenReturn(userToSave);
+
+        User savedUser = userService.saveUser(userToSave);
+
+        assertEquals(userToSave, savedUser);
+    }
+
 
 
 }

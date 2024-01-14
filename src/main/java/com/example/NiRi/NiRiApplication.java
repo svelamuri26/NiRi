@@ -3,6 +3,8 @@ package com.example.NiRi;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,33 +12,33 @@ import java.sql.SQLException;
 
 
 @SpringBootApplication
+@ComponentScan(basePackages = "com.example.NiRi")
 public class NiRiApplication  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NiRiApplication.class, args);
+
+
 	}
+}
 
-
-	public void run(String... args) {
-
-		insertUserData("Mike Brown", "mike.brown@example.com", "secretPassword123");
-	}
-
-	private void insertUserData(String name, String email, String password) {
-
-		String jdbcUrl = "jdbc:mysql://localhost:3306/your_database_name";
+/*
+		String jdbcUrl = "jdbc:mysql://localhost:3306/NiRi";
 		String username = "root";
-		 password = "niri2214";
+		String password = "niri2214";
+
+		String sql = "INSERT INTO User (name, email , password ) VALUES (?, ?, ?)";
 
 		try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
-			String insertSql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+			PreparedStatement pstmt = connection.prepareStatement(sql);{
 
-			try (PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-				preparedStatement.setString(1, name);
-				preparedStatement.setString(2, email);
-				preparedStatement.setString(3, password);
 
-				int affectedRows = preparedStatement.executeUpdate();
+				pstmt.setString(1, "Maria Haag");
+				pstmt.setString(2, "maria.haag@example.com");
+				pstmt.setString(3, "misc3876");
+
+				pstmt.executeUpdate();
+				int affectedRows = pstmt.executeUpdate();
 
 				if (affectedRows > 0) {
 					System.out.println("User data inserted successfully.");
@@ -46,8 +48,4 @@ public class NiRiApplication  {
 			}
 		} catch (SQLException e) {
 			System.err.println("Error executing SQL query: " + e.getMessage());
-		}
-
-
-	}
-}
+		}*/
