@@ -17,11 +17,6 @@ public class NiRiApplication  {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NiRiApplication.class, args);
-
-
-	}
-}
-
 /*
 		String jdbcUrl = "jdbc:mysql://localhost:3306/NiRi";
 		String username = "root";
@@ -49,3 +44,8 @@ public class NiRiApplication  {
 		} catch (SQLException e) {
 			System.err.println("Error executing SQL query: " + e.getMessage());
 		}*/
+
+
+	}
+}
+
