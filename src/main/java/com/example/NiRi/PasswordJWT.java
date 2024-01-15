@@ -3,13 +3,12 @@ package com.example.NiRi;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 
 @Component
 public class PasswordJWT {
 
-    private static final String SECRET_KEY = "yourSecretKey";
+    private static final String SECRET_KEY = "aishwaryaniri221402";
 
     public String generateToken(User user) {
         return Jwts.builder()
