@@ -1,7 +1,7 @@
-package com.example.NiRi.Service;
+package com.example.NiRi.service;
 
-import com.example.NiRi.User;
-import com.example.NiRi.Repository.UserRepository;
+import com.example.NiRi.modules.User;
+import com.example.NiRi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PutMapping;

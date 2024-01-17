@@ -1,4 +1,4 @@
-package com.example.NiRi.ExceptionalHandling;
+package com.example.NiRi.exceptionalHandling;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

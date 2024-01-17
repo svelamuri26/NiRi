@@ -1,8 +1,8 @@
 package com.example.NiRi.controller;
 
-import com.example.NiRi.User;
-import com.example.NiRi.Repository.UserRepository;
-import com.example.NiRi.Service.UserService;
+import com.example.NiRi.modules.User;
+import com.example.NiRi.repository.UserRepository;
+import com.example.NiRi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
