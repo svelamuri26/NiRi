@@ -1,4 +1,4 @@
-package com.example.NiRi;
+/*package com.example.NiRi;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,4 +31,4 @@ public class SwaggerConfig {
                 .contact(new Contact("Sample Name", "Sample Website", "sample.email@example.com"))
                 .build();
     }
-}
+}*/

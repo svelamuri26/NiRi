@@ -1,6 +1,6 @@
 package com.example.NiRi.controller;
 
-import com.example.NiRi.modules.Product;
+import com.example.NiRi.modules.Products;
 import com.example.NiRi.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,22 +18,22 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public Product addProduct(@RequestBody Product product) {
+    public Products addProduct(@RequestBody Products product) {
         return productService.saveProduct(product);
     }
 
     @GetMapping("/all")
-    public List<Product> getAllProducts() {
+    public List<Products> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/getById")
-    public Product getProductById(@RequestParam Long id) {
+    public Products getProductById(@RequestParam Long id) {
         return productService.getProductById(id);
     }
 
     @PutMapping("/update/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
+    public Products updateProduct(@PathVariable Long id, @RequestBody Products updatedProduct) {
         return productService.updateProductDetails(id, updatedProduct);
     }
 

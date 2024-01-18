@@ -1,12 +1,12 @@
 package com.example.NiRi.modules;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
-public class Product {
+public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,7 +16,9 @@ public class Product {
     private String description;
     private int stock;
 
-    public Product(Long id, String name, float price, String description, int stock) {
+    public Products(){
+    }
+    public Products(Long id, String name, float price, String description, int stock) {
         this.id = id;
         this.name = name;
         this.price = price;
