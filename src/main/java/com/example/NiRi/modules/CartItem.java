@@ -29,8 +29,6 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    // Getters and setters for id, product, user, and quantity
-
     public Long getId() {
         return id;
     }
