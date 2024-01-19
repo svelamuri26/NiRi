@@ -17,16 +17,20 @@ public class CartItem {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private int quantity;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
+    private int quantity;
     public CartItem() {
     }
 
-    public CartItem(Long id, Products product, User user, int quantity) {
+    public CartItem(Long id, Products product, User user, int quantity, Order order) {
         this.id = id;
         this.product = product;
         this.user = user;
         this.quantity = quantity;
+        this.order = order;
     }
 
     public Long getId() {
@@ -53,11 +57,22 @@ public class CartItem {
         this.user = user;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
     public int getQuantity() {
         return quantity;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setStatus(String purchased) {
     }
 }
