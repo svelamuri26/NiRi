@@ -1,10 +1,10 @@
 package com.example.NiRi.controller;
 
-import com.example.NiRi.modules.CartItem;
-import com.example.NiRi.service.CartItemService;
 import com.example.NiRi.modules.Order;
 import com.example.NiRi.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +14,6 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
-    private Object cartItemService;
 
     @Autowired
     public OrderController(OrderService orderService) {
@@ -22,9 +21,15 @@ public class OrderController {
     }
 
     @GetMapping("/all")
-    public List<Order> getAllOrders() {
-        return orderService.getAllOrders();
+    public ResponseEntity<List<Order>> getAllOrders() {
+        try {
+            List<Order> orders = orderService.getAllOrders();
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     @GetMapping("/getByUserId")
     public List<Order> getOrdersByUserId(@RequestParam Long userId) {

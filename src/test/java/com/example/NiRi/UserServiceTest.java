@@ -26,17 +26,14 @@ public class UserServiceTest {
 
     @Test
     public void testGetAllUsers() {
-        // Arrange
+
         User user1 = new User("John Doe", "john@example.com", "password123");
         User user2 = new User("Jane Smith", "jane@example.com", "password456");
         List<User> userList = Arrays.asList(user1, user2);
 
         when(userRepository.findAll()).thenReturn(userList);
 
-        // Act
         List<User> result = userService.getAllUsers();
-
-        // Assert
         assertEquals(userList, result);
     }
 
