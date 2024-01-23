@@ -1,6 +1,6 @@
 package com.example.NiRi.service;
 
-import com.example.NiRi.modules.Product;
+import com.example.NiRi.modules.Products;
 import com.example.NiRi.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,27 +8,27 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductService {
+public class ProductService  {
 
     @Autowired
     private ProductRepository productRepository;
 
-    public Product saveProduct(Product product) {
+    public Products saveProduct(Products product) {
         return productRepository.save(product);
     }
 
-    public List<Product> getAllProducts() {
+    public List<Products> getAllProducts() {
         return productRepository.findAll();
     }
 
-    public Product getProductById(Long id) {
+    public Products getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Products not found with id: " + id));
     }
 
-    public Product updateProductDetails(Long id, Product updatedProduct) {
-        Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+    public Products updateProductDetails(Long id, Products updatedProduct) {
+        Products existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Products not found with id: " + id));
 
         existingProduct.setName(updatedProduct.getName());
         existingProduct.setPrice(updatedProduct.getPrice());
