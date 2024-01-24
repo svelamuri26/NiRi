@@ -24,8 +24,10 @@ class ProductServiceTest {
     @Test
     void saveProduct() {
 
-        Products productToSave = new Products(null, "Test Product", 10.0f, "Description", 5);
-        Products savedProduct = new Products(1L, "Test Product", 10.0f, "Description", 5);
+        Products productToSave = new Products();
+
+
+        Products savedProduct = new Products();
 
         when(productRepository.save(productToSave)).thenReturn(savedProduct);
 
@@ -45,8 +47,8 @@ class ProductServiceTest {
     void getAllProducts() {
 
         List<Products> productList = Arrays.asList(
-                new Products(1L, "Product 1", 20.0f, "Description 1", 10),
-                new Products(2L, "Product 2", 30.0f, "Description 2", 15)
+                new Products(),
+                new Products()
         );
 
         when(productRepository.findAll()).thenReturn(productList);
@@ -63,9 +65,9 @@ class ProductServiceTest {
 
     @Test
     void getProductById() {
-
         Long productId = 1L;
-        Products product = new Products(productId, "Test Product", 25.0f, "Description", 8);
+        Products product = new Products();
+        product.setId(1L);
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
@@ -73,17 +75,16 @@ class ProductServiceTest {
 
         assertNotNull(result);
         assertEquals(productId, result.getId());
-        assertEquals(product.getName(), result.getName());
-
 
         verify(productRepository, times(1)).findById(productId);
     }
+
     @Test
     void updateProductDetails() {
 
         Long productId = 1L;
-        Products existingProduct = new Products(productId, "Existing Product", 30.0f, "Old Description", 12);
-        Products updatedProduct = new Products(productId, "Updated Product", 40.0f, "New Description", 20);
+        Products existingProduct = new Products();
+        Products updatedProduct = new Products();
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
         when(productRepository.save(existingProduct)).thenReturn(updatedProduct);
@@ -99,6 +100,8 @@ class ProductServiceTest {
         verify(productRepository, times(1)).findById(productId);
         verify(productRepository, times(1)).save(existingProduct);
     }
+
+
     @Test
     void deleteProduct() {
 

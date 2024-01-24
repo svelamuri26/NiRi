@@ -23,6 +23,7 @@ public class CartItemController {
         cartItemService.addToCart(userId, productId, quantity);
     }
 
+
     @PostMapping("/remove/{cartItemId}")
     public void removeFromCart(@PathVariable Long cartItemId) {
         cartItemService.removeFromCart(cartItemId);

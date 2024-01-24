@@ -30,6 +30,10 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/placeOrder")
+    public ResponseEntity<String> placeOrder() {
+        return ResponseEntity.ok("Order placed successfully");
+    }
 
     @GetMapping("/getByUserId")
     public List<Order> getOrdersByUserId(@RequestParam Long userId) {

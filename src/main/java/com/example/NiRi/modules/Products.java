@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 
 @Entity
 public class Products {
@@ -13,17 +14,22 @@ public class Products {
 
     private String name;
     private float price;
+
+    @Column(name = "description")
     private String description;
+
     private int stock;
 
-    public Products(){
-    }
-    public Products(Long id, String name, float price, String description, int stock) {
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    public Products() {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.stock = stock;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -65,4 +71,13 @@ public class Products {
     public void setStock(int stock) {
         this.stock = stock;
     }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
 }

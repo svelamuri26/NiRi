@@ -75,4 +75,7 @@ public class CartItem {
 
     public void setStatus(String purchased) {
     }
+    public float calculateSubtotal() {
+        return product.getPrice() * quantity;
+    }
 }

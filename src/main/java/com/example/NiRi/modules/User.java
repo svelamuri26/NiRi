@@ -4,25 +4,36 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String email;
     private String password;
-
+    private String role;
+    private String username;
+    private String resetToken;
+    private LocalDateTime resetTokenCreationTime;
 
     public User() {
     }
 
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, String role, String username, String resetToken) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
+        this.username = username;
+        this.resetToken = resetToken;
+    }
+
+    public User(String testUser, String mail, String testPassword, String testRole, String s) {
     }
 
     public String getPassword() {
@@ -55,6 +66,42 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<String> getRolesList() {
+        return Arrays.asList(role.split(","));
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenCreationTime() {
+        return resetTokenCreationTime;
+    }
+
+    public void setResetTokenCreationTime(LocalDateTime resetTokenCreationTime) {
+        this.resetTokenCreationTime = resetTokenCreationTime;
     }
 
 }
