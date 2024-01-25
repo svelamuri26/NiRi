@@ -1,6 +1,5 @@
 package com.example.NiRi.service;
 
-
 import com.example.NiRi.modules.User;
 import com.example.NiRi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
-
 
 @Service
 public class UserService {
@@ -101,7 +99,6 @@ public class UserService {
     public User updateProfileInformation(Long id, String name, String email) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
 
         user.setName(name);
         user.setEmail(email);

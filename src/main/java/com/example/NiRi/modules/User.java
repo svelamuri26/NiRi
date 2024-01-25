@@ -21,6 +21,7 @@ public class User {
     private String resetToken;
     private LocalDateTime resetTokenCreationTime;
 
+
     public User() {
     }
 

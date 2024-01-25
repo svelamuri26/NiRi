@@ -2,15 +2,19 @@ package com.example.NiRi.controller;
 
 import com.example.NiRi.modules.Order;
 import com.example.NiRi.service.OrderService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
+@Api(tags = "Order Management")
 public class OrderController {
 
     private final OrderService orderService;
@@ -21,6 +25,7 @@ public class OrderController {
     }
 
     @GetMapping("/all")
+    @ApiOperation("Get all orders")
     public ResponseEntity<List<Order>> getAllOrders() {
         try {
             List<Order> orders = orderService.getAllOrders();
@@ -31,10 +36,11 @@ public class OrderController {
     }
 
     @PostMapping("/placeOrder")
-    public ResponseEntity<String> placeOrder() {
-        return ResponseEntity.ok("Order placed successfully");
+    public ResponseEntity<Map<String, String>> placeOrder() {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Order placed successfully");
+        return ResponseEntity.ok(response);
     }
-
     @GetMapping("/getByUserId")
     public List<Order> getOrdersByUserId(@RequestParam Long userId) {
         return orderService.getOrdersByUserId(userId);
