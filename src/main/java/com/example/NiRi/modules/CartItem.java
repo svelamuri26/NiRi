@@ -3,6 +3,7 @@ package com.example.NiRi.modules;
 import jakarta.persistence.*;
 
 @Entity
+@Table (name = "cartitem")
 public class CartItem {
 
     @Id

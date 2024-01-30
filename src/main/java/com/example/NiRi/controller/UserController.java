@@ -56,7 +56,7 @@ public class UserController {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
     }
-    
+
     @PutMapping("/resetPassword")
     public void resetPassword(@RequestParam String email, @RequestParam String newPassword) {
         userService.updateUserPassword(email, newPassword);
