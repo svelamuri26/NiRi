@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -29,20 +30,6 @@ public class UserService implements UserDetailsService {
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-    }
-    public void updateUserPassword(String email, String newPassword) {
-        User user = getUserByEmail(email);
-        user.setPassword(newPassword);
-        userRepository.save(user);
-    }
-
-    public User authenticateUser(String email, String password) {
-        User user = getUserByEmail(email);
-        if (user.getPassword().equals(password)) {
-            return user;
-        } else {
-            throw new RuntimeException("Invalid credentials");
-        }
     }
 
     public List<User> getUsersByName(String name) {
@@ -121,4 +108,23 @@ public class UserService implements UserDetailsService {
                 .roles(user.getRolesList().toArray(new String[0]))
                 .build();
     }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public void updateUserPassword(String email, String newPassword) {
+        User user = getUserByEmail(email);
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
+
+    public User authenticateUser(String email, String password) {
+        User user = getUserByEmail(email);
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            return user;
+        } else {
+            throw new RuntimeException("Invalid credentials");
+        }
+    }
+
 }
