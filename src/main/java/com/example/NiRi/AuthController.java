@@ -1,11 +1,14 @@
 package com.example.NiRi;
 
-import com.example.NiRi.PasswordJWT;
 import com.example.NiRi.modules.User;
 import com.example.NiRi.repository.UserRepository;
 import com.example.NiRi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -13,31 +16,39 @@ public class AuthController {
 
     private final UserService userService;
     private final UserRepository userRepository;
-    private final PasswordJWT passwordJWT;
+    private final JwtTokenUtil jwtTokenUtil; // Inject JwtTokenUtil
 
     @Autowired
-    public AuthController(UserService userService, UserRepository userRepository, PasswordJWT passwordJWT) {
+    public AuthController(UserService userService, UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
         this.userService = userService;
         this.userRepository = userRepository;
-        this.passwordJWT = passwordJWT;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @PostMapping("/register")
     public String registerUser(@RequestBody User user) {
-        String hashedPassword = passwordJWT.encodePassword(user.getPassword());
-        user.setPassword(hashedPassword);
         userService.saveUser(user);
         return "User registered successfully!";
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestParam String email, @RequestParam String password) {
-        User user = userService.authenticateUser(email, password);
-        if (user != null) {
-            String token = passwordJWT.generateToken(user);
-            return token;
+    public ResponseEntity<?> loginUser(@RequestParam String email, @RequestParam String password) {
+        try {
+            User user = userService.authenticateUser(email, password);
+            if (user != null) {
+
+                String token = jwtTokenUtil.generateToken(user.getUsername());
+
+                Map<String, String> response = new HashMap<>();
+                response.put("token", token);
+
+                return ResponseEntity.ok(response);
+            }
+        } catch (RuntimeException e) {
+
         }
-        throw new RuntimeException("Invalid email/password");
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email/password");
     }
 
     @PostMapping("/forgotPassword")

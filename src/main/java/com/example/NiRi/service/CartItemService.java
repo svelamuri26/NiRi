@@ -57,4 +57,8 @@ public class CartItemService  {
     public List<CartItem> getCartItemsByIds(List<Long> cartItemIds) {
         return cartItemRepository.findAllById(cartItemIds);
     }
+
+    public void saveAllCartItems(List<CartItem> cartItems) {
+        cartItemRepository.saveAll(cartItems);
+    }
 }

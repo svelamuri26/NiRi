@@ -1,13 +1,11 @@
 package com.example.NiRi.service;
 
+import com.example.NiRi.modules.Products;
 import com.example.NiRi.modules.CartItem;
 import com.example.NiRi.modules.Order;
-import com.example.NiRi.modules.Products;
 import com.example.NiRi.modules.User;
-import com.example.NiRi.repository.CartItemRepository;
 import com.example.NiRi.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,16 +19,22 @@ public class OrderService {
     @Autowired
     private CartItemService cartItemService;
 
-    public Order convertCartToOrder(Long userId, List<Long> cartItemIds) {
+    @Autowired
+    private UserService userService; // Assuming you have a UserService
 
-        User user = new User();
+    public Order convertCartToOrder(Long userId, List<Long> cartItemIds) {
+        User user = userService.getUserById(userId); // Retrieve user from the database
+
         List<CartItem> cartItems = cartItemService.getCartItemsByIds(cartItemIds);
+
         Order order = new Order();
         order.setUser(user);
         order.setCartItems(cartItems);
         order.setTotalPrice(calculateTotalPrice(cartItems));
         order.setOrderDate(LocalDateTime.now());
+
         orderRepository.save(order);
+
         markCartItemsAsPurchased(cartItems, order);
 
         return order;
@@ -75,8 +79,7 @@ public class OrderService {
             cartItem.setOrder(order);
             cartItem.setStatus("Purchased");
         }
-        SimpleJpaRepository cartItemRepository = null;
-        cartItemRepository.saveAll(cartItems);
+
+        cartItemService.saveAllCartItems(cartItems);
     }
 }
-

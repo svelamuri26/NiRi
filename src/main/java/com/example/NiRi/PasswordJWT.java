@@ -1,4 +1,4 @@
-package com.example.NiRi;
+/*package com.example.NiRi;
 
 import com.example.NiRi.modules.User;
 import io.jsonwebtoken.Jwts;
@@ -24,4 +24,4 @@ public class PasswordJWT {
     public String encodePassword(String password) {
         return null;
     }
-}
+}*/

@@ -24,11 +24,7 @@ public class User {
     private String resetToken;
     private LocalDateTime resetTokenCreationTime;
 
-
-    public User() {
-    }
-
-    public User(String name, String email, String password, String role, String username, String resetToken) {
+     public User(String name, String email, String password, String role, String username, String resetToken) {
         this.name = name;
         this.email = email;
         this.password = password;
