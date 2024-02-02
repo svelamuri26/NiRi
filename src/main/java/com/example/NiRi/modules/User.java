@@ -36,6 +36,10 @@ public class User {
     public User(String testUser, String mail, String testPassword, String testRole, String s) {
     }
 
+    public User() {
+
+    }
+
     public String getPassword() {
         return password;
     }

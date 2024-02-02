@@ -48,6 +48,16 @@ public class SecurityConfig {
             }
         };
     }
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRolesList().toArray(new String[0]))
+                .build();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

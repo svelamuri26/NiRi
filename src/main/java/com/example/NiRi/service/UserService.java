@@ -18,7 +18,7 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private static UserRepository userRepository;
 
     public User saveUser(User user) {
         return userRepository.save(user);
@@ -28,7 +28,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public User getUserByEmail(String email) {
+    public static User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
@@ -102,7 +102,6 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        // You can adapt this part based on your User class structure
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
@@ -119,20 +118,15 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public User authenticateUser(String email, String password) {
-        User user = getUserByEmail(email);
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            return user;
-        } else {
-            throw new RuntimeException("Invalid credentials");
-        }
-    }
-
     public List<User> getUsersByRole(String role) {
         return getUsersByRole(role);
     }
 
     public User getUserByUsername(String username) {
         return getUserByUsername(username);
+    }
+
+    public boolean passwordsMatch(String password, String password1) {
+        return true;
     }
 }

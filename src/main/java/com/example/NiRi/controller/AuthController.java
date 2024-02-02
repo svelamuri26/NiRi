@@ -1,7 +1,10 @@
-package com.example.NiRi;
+package com.example.NiRi.controller;
 
+import com.example.NiRi.JwtTokenUtil;
+import com.example.NiRi.modules.RegisterRequest;
 import com.example.NiRi.modules.User;
 import com.example.NiRi.repository.UserRepository;
+import com.example.NiRi.service.AuthService;
 import com.example.NiRi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,7 @@ public class AuthController {
 
     private final UserService userService;
     private final UserRepository userRepository;
-    private final JwtTokenUtil jwtTokenUtil; // Inject JwtTokenUtil
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     public AuthController(UserService userService, UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
@@ -26,15 +29,23 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody User user) {
+    public String registerUser(@RequestBody RegisterRequest registerRequest) {
+
+        User user = new User();
+        user.setName(registerRequest.getName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(registerRequest.getPassword());
+        user.setRole(registerRequest.getRole());
+
         userService.saveUser(user);
         return "User registered successfully!";
     }
 
+
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestParam String email, @RequestParam String password) {
         try {
-            User user = userService.authenticateUser(email, password);
+            User user = AuthService.authenticateUser(email, password);
             if (user != null) {
 
                 String token = jwtTokenUtil.generateToken(user.getUsername());
