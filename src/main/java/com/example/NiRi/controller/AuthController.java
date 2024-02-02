@@ -20,16 +20,18 @@ public class AuthController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final JwtTokenUtil jwtTokenUtil;
+    private final AuthService authService;
 
     @Autowired
-    public AuthController(UserService userService, UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
+    public AuthController(UserService userService, UserRepository userRepository, JwtTokenUtil jwtTokenUtil, AuthService authService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.authService = authService;
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<User> registerUser(@RequestBody RegisterRequest registerRequest) {
 
         User user = new User();
         user.setName(registerRequest.getName());
@@ -38,14 +40,13 @@ public class AuthController {
         user.setRole(registerRequest.getRole());
 
         userService.saveUser(user);
-        return "User registered successfully!";
+        return ResponseEntity.ok(user);
     }
-
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestParam String email, @RequestParam String password) {
         try {
-            User user = AuthService.authenticateUser(email, password);
+            User user = authService.authenticateUser(email, password);
             if (user != null) {
 
                 String token = jwtTokenUtil.generateToken(user.getUsername());

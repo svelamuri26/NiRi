@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private static UserRepository userRepository;
+    private  UserRepository userRepository;
 
     public User saveUser(User user) {
         return userRepository.save(user);
@@ -28,7 +27,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public static User getUserByEmail(String email) {
+    public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }

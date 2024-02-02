@@ -13,8 +13,8 @@ public class AuthService implements UserDetailsService {
     @Autowired
     private UserService userService;
 
-    public static User authenticateUser(String email, String password) {
-        User user = UserService.getUserByEmail(email);
+    public User authenticateUser(String email, String password) {
+        User user = userService.getUserByEmail(email);
         String passwordEncoder = null;
         if (passwordEncoder.matches(password)) {
             return user;
