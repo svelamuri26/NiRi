@@ -1,10 +1,9 @@
 package com.example.NiRi.controller;
 
+import com.example.NiRi.OrderCreationRequest;
 import com.example.NiRi.modules.Order;
 import com.example.NiRi.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,36 +12,20 @@ import java.util.List;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private final OrderService orderService;
-
     @Autowired
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    private OrderService orderService;
+
+    @PostMapping("/create")
+    public Order createOrder(@RequestBody OrderCreationRequest orderRequest) {
+        return orderService.createOrder(orderRequest);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Order>> getAllOrders() {
-        try {
-            List<Order> orders = orderService.getAllOrders();
-            return new ResponseEntity<>(orders, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-    @GetMapping("/getByUserId")
-    public List<Order> getOrdersByUserId(@RequestParam Long userId) {
+    @GetMapping("/user/{userId}")
+    public List<Order> getOrdersByUserId(@PathVariable Long userId) {
         return orderService.getOrdersByUserId(userId);
     }
-
-    @GetMapping("/getById")
-    public Order getOrderById(@RequestParam Long id) {
-        return orderService.getOrderById(id);
-    }
-
-    @DeleteMapping("/cancel/{id}")
-    public void cancelOrder(@PathVariable Long id) {
-        orderService.cancelOrder(id);
+    @GetMapping("/all")
+    public List<Order> getAllOrders() {
+        return orderService.getAllOrders();
     }
 }

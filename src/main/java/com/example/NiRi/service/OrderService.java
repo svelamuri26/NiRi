@@ -1,11 +1,13 @@
 package com.example.NiRi.service;
 
+import com.example.NiRi.OrderCreationRequest;
 import com.example.NiRi.modules.CartItem;
 import com.example.NiRi.modules.Order;
 import com.example.NiRi.modules.Products;
 import com.example.NiRi.modules.User;
 import com.example.NiRi.repository.CartItemRepository;
 import com.example.NiRi.repository.OrderRepository;
+import com.example.NiRi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
@@ -21,15 +23,16 @@ public class OrderService {
     @Autowired
     private CartItemService cartItemService;
 
-    public Order convertCartToOrder(Long userId, List<Long> cartItemIds) {
+    @Autowired
+    private UserRepository userRepository;
 
-        User user = new User();
+    public Order convertCartToOrder(Long userId, List<Long> cartItemIds) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
         List<CartItem> cartItems = cartItemService.getCartItemsByIds(cartItemIds);
-        Order order = new Order();
-        order.setUser(user);
-        order.setCartItems(cartItems);
-        order.setTotalPrice(calculateTotalPrice(cartItems));
-        order.setOrderDate(LocalDateTime.now());
+
+        Order order = new Order(user, cartItems, calculateTotalPrice(cartItems), LocalDateTime.now());
         orderRepository.save(order);
         markCartItemsAsPurchased(cartItems, order);
 
@@ -78,5 +81,20 @@ public class OrderService {
         SimpleJpaRepository cartItemRepository = null;
         cartItemRepository.saveAll(cartItems);
     }
-}
 
+    public List<Order> getOrdersByUserEmail(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+
+        return orderRepository.findByUser(user);
+    }
+
+    public Order createOrder(OrderCreationRequest orderRequest) {
+
+        Order newOrder = new Order();
+        newOrder.setUser();
+        Order createdOrder = orderRepository.save(newOrder);
+
+        return createdOrder;
+    }
+}

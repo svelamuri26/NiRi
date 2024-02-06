@@ -1,5 +1,6 @@
 package com.example.NiRi.controller;
 
+import com.example.NiRi.CartItemRequest;
 import com.example.NiRi.modules.CartItem;
 import com.example.NiRi.service.CartItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,13 @@ public class CartItemController {
     }
 
     @PostMapping("/{userId}/add")
-    public void addToCart(@PathVariable Long userId, @RequestParam Long productId, @RequestParam int quantity) {
-        cartItemService.addToCart(userId, productId, quantity);
+    public void addToCart(@PathVariable Long userId, @RequestBody CartItemRequest cartItemRequest) {
+        cartItemService.addToCart(userId, cartItemRequest.getProductId(), cartItemRequest.getQuantity());
     }
 
     @PostMapping("/remove/{cartItemId}")
     public void removeFromCart(@PathVariable Long cartItemId) {
         cartItemService.removeFromCart(cartItemId);
     }
+
 }
