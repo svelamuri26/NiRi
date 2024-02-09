@@ -1,5 +1,6 @@
 package com.example.NiRi.controller;
 
+import com.example.NiRi.modules.Products;
 import com.example.NiRi.modules.User;
 import com.example.NiRi.repository.UserRepository;
 import com.example.NiRi.service.UserService;
@@ -36,4 +37,10 @@ public class UserController {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
+
+    @GetMapping("/getById")
+    public User getUserById(@RequestParam Long id) {
+        return userService.getUserById(id);
+    }
+
 }

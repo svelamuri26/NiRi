@@ -38,6 +38,21 @@ public class ProductService  {
         return productRepository.save(existingProduct);
     }
 
+    public List<Products> getProductsByPriceRange(float minPrice, float maxPrice) {
+        return productRepository.findByPriceRange(minPrice, maxPrice);
+    }
+    public Products getProductByName(String name) {
+        List<Products> products = productRepository.findByName(name);
+
+        if (products.isEmpty()) {
+            throw new RuntimeException("Product not found with name: " + name);
+        }
+
+        return products.get(0);
+    }
+
+
+
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }

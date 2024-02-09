@@ -1,6 +1,7 @@
 package com.example.NiRi.modules;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,12 +12,15 @@ public class Order {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<CartItem> cartItems;
 
     private double totalPrice;
+
+    @Column(nullable = false)
     private LocalDateTime orderDate;
 
     public Order() {
@@ -46,31 +50,11 @@ public class Order {
         this.user = user;
     }
 
-    public List<CartItem> getCartItems() {
-        return cartItems;
-    }
-
-    public void setCartItems(List<CartItem> cartItems) {
-        this.cartItems = cartItems;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
-
     public void setUser() {
 
+    }
+
+    public List<CartItem> getCartItems() {
+        return cartItems;
     }
 }

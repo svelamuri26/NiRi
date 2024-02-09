@@ -1,4 +1,4 @@
-package com.example.NiRi;
+package com.example.NiRi.modules;
 
 import java.util.List;
 

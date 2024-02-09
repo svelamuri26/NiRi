@@ -1,5 +1,6 @@
 package com.example.NiRi.service;
 
+import com.example.NiRi.modules.Products;
 import com.example.NiRi.modules.User;
 import com.example.NiRi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,10 @@ public class UserService {
     }
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 }

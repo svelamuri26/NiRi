@@ -10,27 +10,32 @@ public class CartItem {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Products product;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Column(nullable = false)
     private int quantity;
+
+    @Column(name = "status", nullable = false)
+    private String status;
+
     public CartItem() {
     }
 
-    public CartItem(Long id, Products product, User user, int quantity, Order order) {
-        this.id = id;
-        this.product = product;
-        this.user = user;
-        this.quantity = quantity;
-        this.order = order;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getId() {
@@ -46,7 +51,13 @@ public class CartItem {
     }
 
     public void setProduct(Products product) {
+        if (this.product != null) {
+            this.product.getCartItems().remove(this); // Remove from the old product's collection
+        }
         this.product = product;
+        if (product != null) {
+            product.getCartItems().add(this); // Add to the new product's collection
+        }
     }
 
     public User getUser() {
@@ -71,10 +82,5 @@ public class CartItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public void setStatus(String purchased) {
-
-        return;
     }
 }
