@@ -36,6 +36,14 @@ public class ProductController {
     public Products updateProduct(@PathVariable Long id, @RequestBody Products updatedProduct) {
         return productService.updateProductDetails(id, updatedProduct);
     }
+    @GetMapping("/getByName")
+    public Products getProductByName(@RequestParam String name) {
+        return productService.getProductByName(name);
+    }
+    @GetMapping("/getByPriceRange")
+    public List<Products> getProductsByPriceRange(@RequestParam float minPrice, @RequestParam float maxPrice) {
+        return productService.getProductsByPriceRange(minPrice, maxPrice);
+    }
 
     @DeleteMapping("/delete/{id}")
     public void deleteProduct(@PathVariable Long id) {

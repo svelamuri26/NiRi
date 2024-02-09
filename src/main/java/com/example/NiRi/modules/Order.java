@@ -1,32 +1,33 @@
 package com.example.NiRi.modules;
 
-import com.example.NiRi.repository.OrderRepository;
 import jakarta.persistence.*;
-import jakarta.persistence.Id;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
+@Entity(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<CartItem> cartItems;
 
-    private float totalPrice;
+    private double totalPrice;
+
+    @Column(nullable = false)
     private LocalDateTime orderDate;
 
-    public Order(){
+    public Order() {
 
     }
 
-    public Order(Long id, User user, List<CartItem> cartItems, float totalPrice, LocalDateTime orderDate) {
-        this.id = id;
+    public Order(User user, List<CartItem> cartItems, double totalPrice, LocalDateTime orderDate) {
         this.user = user;
         this.cartItems = cartItems;
         this.totalPrice = totalPrice;
@@ -49,27 +50,11 @@ public class Order {
         this.user = user;
     }
 
+    public void setUser() {
+
+    }
+
     public List<CartItem> getCartItems() {
         return cartItems;
-    }
-
-    public void setCartItems(List<CartItem> cartItems) {
-        this.cartItems = cartItems;
-    }
-
-    public float getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(float totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
     }
 }
