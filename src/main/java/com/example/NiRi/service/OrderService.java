@@ -114,9 +114,12 @@ public class OrderService {
         User user = userRepository.findById(orderRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + orderRequest.getUserId()));
 
+        System.out.println("Order Creation Request: " + orderRequest);
         Order newOrder = new Order(user, null, orderRequest.getTotalPrice(), LocalDateTime.now());
         Order createdOrder = orderRepository.save(newOrder);
+        System.out.println("Created Order: " + createdOrder);
 
         return createdOrder;
     }
+
 }
