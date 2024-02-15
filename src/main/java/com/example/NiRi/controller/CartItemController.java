@@ -21,23 +21,25 @@ public class CartItemController {
     }
 
     @PutMapping("/{userId}/add")
-    public ResponseEntity<String> addToCart(@PathVariable Long userId, @RequestBody CartItemPayload cartItemPayload) {
+    public ResponseEntity<ApiResponse> addToCart(@PathVariable Long userId, @RequestBody CartItemPayload cartItemPayload) {
         try {
             CartItemRequest cartItemRequest = new CartItemRequest(cartItemPayload.getProductId(), cartItemPayload.getQuantity());
             cartItemService.addToCart(userId, cartItemRequest);
-            return ResponseEntity.ok("Item added to cart successfully.");
+            return ResponseEntity.ok(new ApiResponse(true, "Item added to cart successfully."));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding item to cart.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, "Failed to add item to cart."));
         }
     }
 
     @PostMapping("/remove/{cartItemId}")
-    public ResponseEntity<String> removeFromCart(@PathVariable Long cartItemId) {
+    public ResponseEntity<ApiResponse> removeFromCart(@PathVariable Long cartItemId) {
         try {
             cartItemService.removeFromCart(cartItemId);
-            return ResponseEntity.ok("Item removed from cart successfully.");
+            ApiResponse response = new ApiResponse(true, "Item removed from cart successfully.");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error removing item from cart.");
+            ApiResponse response = new ApiResponse(false, "Error removing item from cart.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
