@@ -13,6 +13,8 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class OrderService {
@@ -111,12 +113,17 @@ public class OrderService {
     }
 
     public Order createOrder(OrderCreationRequest orderRequest) {
+        Logger logger = LoggerFactory.getLogger(getClass());
+
         User user = userRepository.findById(orderRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + orderRequest.getUserId()));
 
+        logger.info("Order Creation Request: {}", orderRequest);
         Order newOrder = new Order(user, null, orderRequest.getTotalPrice(), LocalDateTime.now());
         Order createdOrder = orderRepository.save(newOrder);
+        logger.info("Created Order: {}", createdOrder);
 
         return createdOrder;
     }
+
 }

@@ -1,5 +1,7 @@
 package com.example.NiRi.modules;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,8 +19,8 @@ public class CartItem {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "order_id")
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @Column(nullable = false)
@@ -26,9 +28,6 @@ public class CartItem {
 
     @Column(name = "status", nullable = false)
     private String status;
-
-    public CartItem() {
-    }
 
     public String getStatus() {
         return status;

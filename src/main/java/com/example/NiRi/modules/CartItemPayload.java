@@ -1,5 +1,8 @@
 package com.example.NiRi.modules;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class CartItemPayload {
@@ -7,7 +10,12 @@ public class CartItemPayload {
     private Long userId;
     private List<CartItemRequest> cartItems;
     private Long cartItemId;
-    private int quantity;
+    private Long productId;  // Add this field
+
+    private int quantity; // Make it accessible in the subclass
+
+    public CartItemPayload() {
+    }
 
     public Long getUserId() {
         return userId;
@@ -25,12 +33,13 @@ public class CartItemPayload {
         this.cartItems = cartItems;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
+    // Provide a setter for quantity
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     public Long getCartItemId() {
@@ -41,4 +50,11 @@ public class CartItemPayload {
         this.cartItemId = cartItemId;
     }
 
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 }

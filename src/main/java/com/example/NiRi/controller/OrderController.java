@@ -1,15 +1,13 @@
 package com.example.NiRi.controller;
 
-import com.example.NiRi.modules.CartItemPayload;
-import com.example.NiRi.modules.CartItemRequest;
-import com.example.NiRi.modules.Order;
-import com.example.NiRi.modules.OrderResponse;
+import com.example.NiRi.modules.*;
 import com.example.NiRi.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,27 +32,30 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     @PostMapping("/create")
-    public ResponseEntity<com.example.NiRi.modules.Order> createOrder(@RequestBody CartItemPayload cartItemPayload) {
+    public ResponseEntity<List<Order>> createOrder(@RequestBody List<CartItemPayload> cartItemPayloadList) {
         try {
-            com.example.NiRi.modules.OrderCreationRequest orderCreationRequest =
-                    new com.example.NiRi.modules.OrderCreationRequest();
-            orderCreationRequest.setUserId(cartItemPayload.getUserId());
-
-            List<Long> cartItemIds = cartItemPayload.getCartItems().stream()
-                    .map(CartItemRequest::getProductId)
+            List<OrderCreationRequest> orderCreationRequests = cartItemPayloadList.stream()
+                    .map(cartItemPayload -> {
+                        OrderCreationRequest orderCreationRequest = new OrderCreationRequest();
+                        orderCreationRequest.setUserId(cartItemPayload.getUserId());
+                        List<Long> cartItemIds = cartItemPayload.getCartItems().stream()
+                                .map(CartItemRequest::getProductId)
+                                .collect(Collectors.toList());
+                        orderCreationRequest.setCartItemIds(cartItemIds);
+                        return orderCreationRequest;
+                    })
                     .collect(Collectors.toList());
 
-            orderCreationRequest.setCartItemIds(cartItemIds);
+            List<Order> createdOrders = orderCreationRequests.stream()
+                    .map(orderService::createOrder)
+                    .collect(Collectors.toList());
 
-            com.example.NiRi.modules.Order createdOrder = orderService.createOrder(orderCreationRequest);
-            return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+            return new ResponseEntity<>(createdOrders, HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @GetMapping("/getByUserId")
     public List<Order> getOrdersByUserId(@RequestParam Long userId) {
