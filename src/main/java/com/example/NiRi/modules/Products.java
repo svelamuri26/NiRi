@@ -3,6 +3,7 @@ package com.example.NiRi.modules;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Products {
@@ -22,6 +23,7 @@ public class Products {
     @Column(nullable = false)
     private int stock;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<CartItem> cartItems = new ArrayList<>();
 
@@ -34,6 +36,9 @@ public class Products {
         this.price = price;
         this.description = description;
         this.stock = stock;
+    }
+
+    public Products(String product1, double v) {
     }
 
     public Long getId() {

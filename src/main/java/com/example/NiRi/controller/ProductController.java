@@ -1,10 +1,13 @@
 package com.example.NiRi.controller;
 
+import com.example.NiRi.modules.Order;
 import com.example.NiRi.modules.Products;
 import com.example.NiRi.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/products")
@@ -22,10 +25,31 @@ public class ProductController {
         return productService.saveProduct(product);
     }
 
+
     @GetMapping("/all")
     public List<Products> getAllProducts() {
-        return productService.getAllProducts();
+
+        List<Products> products= productService.getAllProducts();
+        System.out.println("products All");
+        System.out.println(products);
+        return products;
     }
+
+
+    /*
+    @GetMapping("/all")
+    public ResponseEntity<List<Products>> getAllProducts() {
+        try {
+            List<Products> products = productService.getAllProducts();
+            System.out.println("products::***********");
+            System.out.println(products);
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    */
+
 
     @GetMapping("/getById")
     public Products getProductById(@RequestParam Long id) {

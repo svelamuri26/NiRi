@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.NiRi.repository.CartItemRepository;
+
+
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -32,6 +35,9 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    /*
     @PostMapping("/create")
     public ResponseEntity<List<Order>> createOrder(@RequestBody List<CartItemPayload> cartItemPayloadList) {
         try {
@@ -55,7 +61,26 @@ public class OrderController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }*/
+
+
+    @PostMapping("/create")
+    public ResponseEntity<Order> createOrder(@RequestBody OrderRequestPayload orderRequest) {
+        try {
+            System.out.println("order11::***********");
+            System.out.println(orderRequest.getCartItemId());
+            //OrderRequest orderRequest = new OrderRequest(orderRequestPayload.getUserId(),orderRequestPayload.getCartItemId(),orderRequestPayload.getOrderId());
+            Order order = orderService.convertCartToOrder(orderRequest.getUserId(),orderRequest.getCartItemId(),orderRequest.getOrderId());
+
+            return  new ResponseEntity<>(order, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+
+
 
     @GetMapping("/getByUserId")
     public List<Order> getOrdersByUserId(@RequestParam Long userId) {
@@ -78,4 +103,5 @@ public class OrderController {
     public void cancelOrder(@PathVariable Long id) {
         orderService.cancelOrder(id);
     }
+
 }

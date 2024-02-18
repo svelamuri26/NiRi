@@ -7,9 +7,12 @@ import com.example.NiRi.modules.Products;
 import com.example.NiRi.modules.User;
 import com.example.NiRi.repository.OrderRepository;
 import com.example.NiRi.repository.UserRepository;
+import com.example.NiRi.repository.CartItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,38 +31,78 @@ public class OrderService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     public double calculateTotalPriceForCartItems(List<CartItem> cartItems) {
+        System.out.println("orderPrice221::***********");
         double totalPrice = 0;
 
         for (CartItem cartItem : cartItems) {
             Products product = cartItem.getProduct();
             int quantity = cartItem.getQuantity();
+            System.out.println(quantity);
 
             if (product != null) {
                 double productPrice = product.getPrice();
+                System.out.println(productPrice);
                 double subtotal = productPrice * quantity;
                 totalPrice += subtotal;
             }
         }
 
-        return totalPrice;
+        return Math.round(totalPrice * 100.0) / 100.0;
     }
-    public Order convertCartToOrder(Long userId, List<Long> cartItemIds) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    /*
+    public ResponseEntity<Order> convertCartToOrder(Long userId, List<Long> cartItemIds) {
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
-        List<CartItem> cartItems = cartItemService.getCartItemsByIds(cartItemIds);
+            List<CartItem> cartItems = (List<CartItem>) cartItemService.getCartItemsByIds(cartItemIds);
 
-        double totalPrice = calculateTotalPriceForCartItems(cartItems);
+            double totalPrice = calculateTotalPriceForCartItems(cartItems);
 
-        Order order = new Order(user, cartItems, totalPrice, LocalDateTime.now());
-        orderRepository.save(order);
-        markCartItemsAsPurchased(cartItems, order);
+            Order order = new Order(user, cartItems, totalPrice, LocalDateTime.now());
 
-        return order;
+            orderRepository.save(order);
+            markCartItemsAsPurchased(cartItems, order);
+
+            return new ResponseEntity<>(order, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+     */
 
+    public Order convertCartToOrder(Long userId, int cartItemId,int orderId) {
+            System.out.println("order221::***********");
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+            System.out.println(user);
+            System.out.println("order331::***********");
+            List<CartItem> cartItems = (List<CartItem>) cartItemService.getCartItemsBycartItemId(cartItemId);
+            System.out.println(cartItems);
+            System.out.println("order336::***********");
+            double totalPrice = calculateTotalPriceForCartItems(cartItems);
+            System.out.println("orderPrice116::***********");
+            System.out.println(totalPrice);
+            Order order = new Order(user, cartItems, totalPrice, LocalDateTime.now(),orderId);
+            System.out.println("order11114::***********");
+            System.out.println(order.getId());
+            System.out.println(order.getTotalPrice());
+            System.out.println(order.getUser().getId());
+            orderRepository.save(order);
+            System.out.println("order11115::***********");
+            markCartItemsAsPurchased(cartItems, orderId);
+            System.out.println("order11116::***********");
+
+
+            return order;
+    }
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -96,13 +139,16 @@ public class OrderService {
         return totalPrice;
     }
 
-    private void markCartItemsAsPurchased(List<CartItem> cartItems, Order order) {
+    private void markCartItemsAsPurchased(List<CartItem> cartItems, int order) {
         for (CartItem cartItem : cartItems) {
-            cartItem.setOrder(order);
+            System.out.println("order11117::***********");
+            System.out.println(cartItem.getStatus());
+            //cartItem.setOrderId(order);
             cartItem.setStatus("Purchased");
+            cartItemRepository.save(cartItem);
         }
-        SimpleJpaRepository cartItemRepository = null;
-        cartItemRepository.saveAll(cartItems);
+        //SimpleJpaRepository cartItemRepository = null;
+        //cartItemRepository.saveAll(cartItems);
     }
 
     public List<Order> getOrdersByUserEmail(String userEmail) {
@@ -119,7 +165,7 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + orderRequest.getUserId()));
 
         logger.info("Order Creation Request: {}", orderRequest);
-        Order newOrder = new Order(user, null, orderRequest.getTotalPrice(), LocalDateTime.now());
+        Order newOrder = new Order(user, null, orderRequest.getTotalPrice(), LocalDateTime.now(), orderRequest.getOrderId());
         Order createdOrder = orderRepository.save(newOrder);
         logger.info("Created Order: {}", createdOrder);
 

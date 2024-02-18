@@ -2,25 +2,30 @@ package com.example.NiRi.service;
 
 import com.example.NiRi.modules.*;
 import com.example.NiRi.repository.CartItemRepository;
+import com.example.NiRi.repository.OrderRepository;
 import com.example.NiRi.repository.ProductRepository;
 import com.example.NiRi.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @Transactional
 public class CartItemService {
 
-    private final CartItemRepository cartItemRepository;
-    private final ProductRepository productRepository;
-    @Autowired
-    private final UserRepository userRepository;
-
+    private CartItemRepository cartItemRepository;
+    private ProductRepository productRepository;
+    private UserRepository userRepository;
+    private OrderRepository orderRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(CartItemService.class);
 
@@ -32,27 +37,52 @@ public class CartItemService {
         this.cartItemRepository = cartItemRepository;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
-
     }
 
-
-    public List<CartItem> getCartItemsByUserId(Long userId) {
-        return cartItemRepository.findByUserId(userId);
+    public ResponseEntity<List<CartItem>> getCartItemsByUserId(Long userId) {
+        List<CartItem> cartItems = cartItemRepository.findByUserId(userId);
+        return new ResponseEntity<>(cartItems, HttpStatus.OK);
     }
 
-    public void removeFromCart(Long cartItemId) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new EntityNotFoundException("Cart item not found with ID: " + cartItemId));
-
-        cartItemRepository.delete(cartItem);
+    public List<CartItem> getCartItemsBycartItemId(int cartItemId) {
+        System.out.println("order331cart::***********");
+        System.out.println(cartItemId);
+        List<CartItem> cartItems = cartItemRepository.findListByCartItemId(cartItemId);
+        System.out.println("order332cart::***********");
+        System.out.println(cartItems);
+        return cartItems;
     }
 
-    public List<CartItem> getCartItemsByIds(List<Long> cartItemIds) {
-        return cartItemRepository.findAllById(cartItemIds);
-    }
-    @Transactional
-    public void addToCart(Long userId, CartItemRequest cartItemRequest) {
+    public ResponseEntity<String> removeFromCart(int cartItemId,Long productId) {
         try {
+            //CartItem cartItem = cartItemRepository.findByCartItemId(cartItemId);
+            List<CartItem> cartItems= getCartItemsBycartItemId(cartItemId);
+            cartItems.stream().filter(cartItem -> cartItem.getProduct().getId().equals(productId)).findAny()
+                    .ifPresent(cartItem -> cartItemRepository.delete(cartItem));
+
+            return new ResponseEntity<>("Cart item removed successfully", HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            logger.error("Error removing cart item", e);
+            return new ResponseEntity<>("Cart item not found", HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error("Error removing cart item", e);
+            return new ResponseEntity<>("Error removing cart item", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    public ResponseEntity<List<CartItem>> getCartItemsByIds(List<Long> cartItemIds) {
+        List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
+        return new ResponseEntity<>(cartItems, HttpStatus.OK);
+    }
+
+
+    @Transactional
+    public ResponseEntity<String> addToCart(Long userId, CartItemRequest cartItemRequest) {
+
+        try {
+            System.out.println("cartId22::***********");
+            System.out.println(cartItemRequest.getCartItemId());
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
@@ -60,33 +90,83 @@ public class CartItemService {
                     .orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + cartItemRequest.getProductId()));
 
             CartItem existingCartItem = cartItemRepository.findByUserAndProduct(user, product);
-
+            System.out.println("cartId555***********");
+            System.out.println(existingCartItem);
             if (existingCartItem != null) {
+                System.out.println("cartId222***********");
                 existingCartItem.setQuantity(existingCartItem.getQuantity() + cartItemRequest.getQuantity());
             } else {
+                System.out.println("cartid111***********");
+                System.out.println(cartItemRequest.getCartItemId());
                 CartItem cartItem = new CartItem();
                 cartItem.setUser(user);
                 cartItem.setProduct(product);
                 cartItem.setQuantity(cartItemRequest.getQuantity());
                 cartItem.setStatus("Added");
-                Order orderObject = null;
-                cartItem.setOrder(orderObject);
+                cartItem.setOrderId(cartItemRequest.getOrderId());
+                cartItem.setCartItemId(cartItemRequest.getCartItemId());
+                //Order orderObject = null;<
+                //cartItem.setOrder(orderObject);
 
                 cartItemRepository.save(cartItem);
             }
+            return new ResponseEntity<>("Item added to cart successfully", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            throw new RuntimeException("User or product not found", e);
+            logger.error("Error adding to cart", e);
+            return new ResponseEntity<>("User or product not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            throw new RuntimeException("Error adding to cart", e);
+            logger.error("Error adding to cart", e);
+            return new ResponseEntity<>("Error adding to cart", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public void updateCartItem(UpdateCartItemRequest updateCartItemsRequest) {
-        for (CartItemPayload cartItemPayload : updateCartItemsRequest.getCartItems()) {
-            CartItem cartItem = cartItemRepository.findById(cartItemPayload.getCartItemId())
-                    .orElseThrow(() -> new EntityNotFoundException("Cart item not found with ID: " + cartItemPayload.getCartItemId()));
-            cartItem.setQuantity(cartItemPayload.getQuantity());
+    public ResponseEntity<String> updateCartItem(CartItemPayload  updateCartItemsRequest) {
+        try {
+            List<CartItem> cartItems = cartItemRepository.findListByCartItemId(updateCartItemsRequest.getCartItemId());
+            cartItems.stream().filter(cartItem -> cartItem.getProduct().getId().equals(updateCartItemsRequest.getProductId())).findAny()
+                    .ifPresent(cartItem -> cartItem.setQuantity(updateCartItemsRequest.getQuantity()));
+
+                return new ResponseEntity<>("Cart items updated successfully", HttpStatus.OK);
+
+            } catch (Exception e) {
+            logger.error("Error updating cart item", e);
+            return new ResponseEntity<>("Error updating cart item", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Transactional
+    public Order createAndSaveOrderWithCartItems(Long userId, List<CartItem> items) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+        Order order = new Order(user, items, calculateTotalPriceForCartItems(items), LocalDateTime.now(),1);
+
+        order.setUser(user);
+
+        orderRepository.save(order);
+
+        for (CartItem item : items) {
+            //item.setOrderId(item);
+            cartItemRepository.save(item);
+        }
+
+        return order;
+    }
+
+    private double calculateTotalPriceForCartItems(List<CartItem> items) {
+        double totalPrice = 0.0;
+
+        for (CartItem item : items) {
+            Products product = item.getProduct();
+            int quantity = item.getQuantity();
+
+            if (product != null) {
+                double productPrice = product.getPrice();
+                double subtotal = productPrice * quantity;
+                totalPrice += subtotal;
+            }
+        }
+
+        return totalPrice;
+    }
+
 }
-

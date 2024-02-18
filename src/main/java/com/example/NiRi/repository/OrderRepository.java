@@ -1,5 +1,6 @@
 package com.example.NiRi.repository;
 
+import com.example.NiRi.modules.CartItem;
 import com.example.NiRi.modules.Order;
 import com.example.NiRi.modules.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +11,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByUserId(Long userId);
 
+    Order findByOrderId(int orderId);
+
     List<Order> findByUser(User user);
 
-    <T> Optional<T> findPendingOrderByUserId(Long userId);
+    Optional findPendingOrderByUserId(Long userId);
 }

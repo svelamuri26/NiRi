@@ -29,7 +29,7 @@ class UserControllerTest {
 
     @Test
     void registerUser() {
-        User userToRegister = new User(); // Create a sample user for testing
+        User userToRegister = new User();
         when(userService.saveUser(userToRegister)).thenReturn(userToRegister);
 
         User registeredUser = userController.registerUser(userToRegister);
@@ -40,7 +40,7 @@ class UserControllerTest {
 
     @Test
     void getAllUsers() {
-        List<User> expectedUsers = Arrays.asList(new User(), new User()); // Create sample users for testing
+        List<User> expectedUsers = Arrays.asList(new User(), new User());
         when(userService.getAllUsers()).thenReturn(expectedUsers);
 
         List<User> actualUsers = userController.getAllUsers();

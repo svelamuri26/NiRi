@@ -1,17 +1,14 @@
 package com.example.NiRi.modules;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class CartItemPayload {
 
     private Long userId;
     private List<CartItemRequest> cartItems;
-    private Long cartItemId;
+    private int cartItemId;
     private Long productId;  // Add this field
-
+    private int orderId;
     private int quantity; // Make it accessible in the subclass
 
     public CartItemPayload() {
@@ -29,9 +26,14 @@ public class CartItemPayload {
         return cartItems;
     }
 
+    public List<CartItemRequest> getCartItems(int cartItemId) {
+        return cartItems;
+    }
+
     public void setCartItems(List<CartItemRequest> cartItems) {
         this.cartItems = cartItems;
     }
+
 
     // Provide a setter for quantity
     public void setQuantity(int quantity) {
@@ -42,11 +44,15 @@ public class CartItemPayload {
         return quantity;
     }
 
-    public Long getCartItemId() {
+    public int getCartItemId() {
+        System.out.println("orderId1010::***********");
+        System.out.println(cartItemId);
         return cartItemId;
     }
 
-    public void setCartItemId(Long cartItemId) {
+    public void setCartItemId(int cartItemId) {
+        System.out.println("orderId44::***********");
+        System.out.println(cartItemId);
         this.cartItemId = cartItemId;
     }
 
@@ -56,5 +62,12 @@ public class CartItemPayload {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+    public int getOrderId() {
+        return orderId;
     }
 }
