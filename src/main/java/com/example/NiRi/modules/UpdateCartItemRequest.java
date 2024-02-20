@@ -3,7 +3,9 @@ package com.example.NiRi.modules;
 import java.util.List;
 
 public class UpdateCartItemRequest {
+
     private Long userId;
+
     private List<CartItemRequest> cartItems;
 
     public Long getUserId() {

@@ -4,38 +4,36 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public class CartItemRequest extends CartItemPayload {
+public class OrderRequest{
 
-    private Long productId;
+    private Long userId;
     private int orderId;
     private int cartItemId;
 
     @JsonCreator
-    public CartItemRequest(
-            @JsonProperty("productId") Long productId,
-            @JsonProperty("quantity") int quantity,
-            @JsonProperty("orderId")  int orderId,
-            @JsonProperty("cartItemId")  int cartItemId) {
-        super();
-        this.productId = productId;
-        this.setQuantity(quantity);
+    public OrderRequest(
+            @JsonProperty("userId") Long userId,
+            @JsonProperty("cartItemId") int cartItemId,
+            @JsonProperty("orderId")  int orderId
+        ) {
+
+        this.userId = userId;
+        this.setUserId(userId);
         this.orderId = orderId;
         this.setOrderId(orderId);
         this.cartItemId = cartItemId;
         this.setCartItemId(cartItemId);
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public  int getOrderId() {
-        System.out.println("orderId***********");
-        System.out.println(orderId);
         return orderId;
     }
 

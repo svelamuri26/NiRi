@@ -4,7 +4,6 @@ import com.example.NiRi.modules.Products;
 import com.example.NiRi.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -50,8 +49,6 @@ public class ProductService  {
 
         return products.get(0);
     }
-
-
 
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);

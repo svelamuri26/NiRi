@@ -7,9 +7,12 @@ import com.example.NiRi.modules.Products;
 import com.example.NiRi.modules.User;
 import com.example.NiRi.repository.OrderRepository;
 import com.example.NiRi.repository.UserRepository;
+import com.example.NiRi.repository.CartItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +31,9 @@ public class OrderService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     public double calculateTotalPriceForCartItems(List<CartItem> cartItems) {
         double totalPrice = 0;
@@ -35,31 +41,32 @@ public class OrderService {
         for (CartItem cartItem : cartItems) {
             Products product = cartItem.getProduct();
             int quantity = cartItem.getQuantity();
+            System.out.println(quantity);
 
             if (product != null) {
                 double productPrice = product.getPrice();
+                System.out.println(productPrice);
                 double subtotal = productPrice * quantity;
                 totalPrice += subtotal;
             }
         }
 
-        return totalPrice;
-    }
-    public Order convertCartToOrder(Long userId, List<Long> cartItemIds) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-
-        List<CartItem> cartItems = cartItemService.getCartItemsByIds(cartItemIds);
-
-        double totalPrice = calculateTotalPriceForCartItems(cartItems);
-
-        Order order = new Order(user, cartItems, totalPrice, LocalDateTime.now());
-        orderRepository.save(order);
-        markCartItemsAsPurchased(cartItems, order);
-
-        return order;
+        return Math.round(totalPrice * 100.0) / 100.0;
     }
 
+    public Order convertCartToOrder(Long userId, int cartItemId,int orderId) {
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+
+            List<CartItem> cartItems = (List<CartItem>) cartItemService.getCartItemsBycartItemId(cartItemId);
+            double totalPrice = calculateTotalPriceForCartItems(cartItems);
+            Order order = new Order(user, cartItems, totalPrice, LocalDateTime.now(),orderId);
+
+            orderRepository.save(order);
+            markCartItemsAsPurchased(cartItems, orderId);
+            return order;
+    }
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
@@ -96,13 +103,11 @@ public class OrderService {
         return totalPrice;
     }
 
-    private void markCartItemsAsPurchased(List<CartItem> cartItems, Order order) {
+    private void markCartItemsAsPurchased(List<CartItem> cartItems, int order) {
         for (CartItem cartItem : cartItems) {
-            cartItem.setOrder(order);
             cartItem.setStatus("Purchased");
+            cartItemRepository.save(cartItem);
         }
-        SimpleJpaRepository cartItemRepository = null;
-        cartItemRepository.saveAll(cartItems);
     }
 
     public List<Order> getOrdersByUserEmail(String userEmail) {
@@ -119,7 +124,7 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + orderRequest.getUserId()));
 
         logger.info("Order Creation Request: {}", orderRequest);
-        Order newOrder = new Order(user, null, orderRequest.getTotalPrice(), LocalDateTime.now());
+        Order newOrder = new Order(user, null, orderRequest.getTotalPrice(), LocalDateTime.now(), orderRequest.getOrderId());
         Order createdOrder = orderRepository.save(newOrder);
         logger.info("Created Order: {}", createdOrder);
 

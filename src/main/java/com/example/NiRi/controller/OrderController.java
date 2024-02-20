@@ -6,15 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.example.NiRi.repository.CartItemRepository;
+
 
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
-
 
     private final OrderService orderService;
 
@@ -32,27 +32,16 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/create")
-    public ResponseEntity<List<Order>> createOrder(@RequestBody List<CartItemPayload> cartItemPayloadList) {
+    public ResponseEntity<Order> createOrder(@RequestBody OrderRequestPayload orderRequest) {
         try {
-            List<OrderCreationRequest> orderCreationRequests = cartItemPayloadList.stream()
-                    .map(cartItemPayload -> {
-                        OrderCreationRequest orderCreationRequest = new OrderCreationRequest();
-                        orderCreationRequest.setUserId(cartItemPayload.getUserId());
-                        List<Long> cartItemIds = cartItemPayload.getCartItems().stream()
-                                .map(CartItemRequest::getProductId)
-                                .collect(Collectors.toList());
-                        orderCreationRequest.setCartItemIds(cartItemIds);
-                        return orderCreationRequest;
-                    })
-                    .collect(Collectors.toList());
+            System.out.println(orderRequest.getCartItemId());
+             Order order = orderService.convertCartToOrder(orderRequest.getUserId(),orderRequest.getCartItemId(),orderRequest.getOrderId());
 
-            List<Order> createdOrders = orderCreationRequests.stream()
-                    .map(orderService::createOrder)
-                    .collect(Collectors.toList());
+            return  new ResponseEntity<>(order, HttpStatus.CREATED);
 
-            return new ResponseEntity<>(createdOrders, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

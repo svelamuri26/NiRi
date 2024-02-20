@@ -19,15 +19,27 @@ public class CartItem {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    @Column(name = "order_id",nullable = false)
+    private int orderId;
+
+    @Column(name = "cart_id")
+    private int cartItemId;
 
     @Column(nullable = false)
     private int quantity;
 
     @Column(name = "status", nullable = false)
     private String status;
+
+    public CartItem() {
+        this.product = null;
+        this.user = null;
+        this.quantity = 0;
+        this.cartItemId = 0;
+    }
+
+    public CartItem(Products product, int i) {
+    }
 
     public String getStatus() {
         return status;
@@ -51,11 +63,11 @@ public class CartItem {
 
     public void setProduct(Products product) {
         if (this.product != null) {
-            this.product.getCartItems().remove(this); // Remove from the old product's collection
+            this.product.getCartItems().remove(this);
         }
         this.product = product;
         if (product != null) {
-            product.getCartItems().add(this); // Add to the new product's collection
+            product.getCartItems().add(this);
         }
     }
 
@@ -67,12 +79,20 @@ public class CartItem {
         this.user = user;
     }
 
-    public Order getOrder() {
-        return order;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setCartItemId(int cartItemId) {
+    this.cartItemId = cartItemId;
+    }
+
+    public int getCartItemId() {
+        return cartItemId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public int getQuantity() {
@@ -82,4 +102,5 @@ public class CartItem {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
 }
