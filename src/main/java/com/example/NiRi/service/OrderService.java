@@ -36,7 +36,6 @@ public class OrderService {
 
 
     public double calculateTotalPriceForCartItems(List<CartItem> cartItems) {
-        System.out.println("orderPrice221::***********");
         double totalPrice = 0;
 
         for (CartItem cartItem : cartItems) {
@@ -54,53 +53,18 @@ public class OrderService {
 
         return Math.round(totalPrice * 100.0) / 100.0;
     }
-    /*
-    public ResponseEntity<Order> convertCartToOrder(Long userId, List<Long> cartItemIds) {
-        try {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
-
-            List<CartItem> cartItems = (List<CartItem>) cartItemService.getCartItemsByIds(cartItemIds);
-
-            double totalPrice = calculateTotalPriceForCartItems(cartItems);
-
-            Order order = new Order(user, cartItems, totalPrice, LocalDateTime.now());
-
-            orderRepository.save(order);
-            markCartItemsAsPurchased(cartItems, order);
-
-            return new ResponseEntity<>(order, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-     */
 
     public Order convertCartToOrder(Long userId, int cartItemId,int orderId) {
-            System.out.println("order221::***********");
+
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
-            System.out.println(user);
-            System.out.println("order331::***********");
+
             List<CartItem> cartItems = (List<CartItem>) cartItemService.getCartItemsBycartItemId(cartItemId);
-            System.out.println(cartItems);
-            System.out.println("order336::***********");
             double totalPrice = calculateTotalPriceForCartItems(cartItems);
-            System.out.println("orderPrice116::***********");
-            System.out.println(totalPrice);
             Order order = new Order(user, cartItems, totalPrice, LocalDateTime.now(),orderId);
-            System.out.println("order11114::***********");
-            System.out.println(order.getId());
-            System.out.println(order.getTotalPrice());
-            System.out.println(order.getUser().getId());
+
             orderRepository.save(order);
-            System.out.println("order11115::***********");
             markCartItemsAsPurchased(cartItems, orderId);
-            System.out.println("order11116::***********");
-
-
             return order;
     }
 
@@ -141,14 +105,9 @@ public class OrderService {
 
     private void markCartItemsAsPurchased(List<CartItem> cartItems, int order) {
         for (CartItem cartItem : cartItems) {
-            System.out.println("order11117::***********");
-            System.out.println(cartItem.getStatus());
-            //cartItem.setOrderId(order);
             cartItem.setStatus("Purchased");
             cartItemRepository.save(cartItem);
         }
-        //SimpleJpaRepository cartItemRepository = null;
-        //cartItemRepository.saveAll(cartItems);
     }
 
     public List<Order> getOrdersByUserEmail(String userEmail) {

@@ -7,9 +7,9 @@ public class CartItemPayload {
     private Long userId;
     private List<CartItemRequest> cartItems;
     private int cartItemId;
-    private Long productId;  // Add this field
+    private Long productId;
     private int orderId;
-    private int quantity; // Make it accessible in the subclass
+    private int quantity;
 
     public CartItemPayload() {
     }
@@ -34,8 +34,6 @@ public class CartItemPayload {
         this.cartItems = cartItems;
     }
 
-
-    // Provide a setter for quantity
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
@@ -45,14 +43,10 @@ public class CartItemPayload {
     }
 
     public int getCartItemId() {
-        System.out.println("orderId1010::***********");
-        System.out.println(cartItemId);
         return cartItemId;
     }
 
     public void setCartItemId(int cartItemId) {
-        System.out.println("orderId44::***********");
-        System.out.println(cartItemId);
         this.cartItemId = cartItemId;
     }
 

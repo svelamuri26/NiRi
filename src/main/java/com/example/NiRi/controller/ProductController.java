@@ -35,22 +35,6 @@ public class ProductController {
         return products;
     }
 
-
-    /*
-    @GetMapping("/all")
-    public ResponseEntity<List<Products>> getAllProducts() {
-        try {
-            List<Products> products = productService.getAllProducts();
-            System.out.println("products::***********");
-            System.out.println(products);
-            return new ResponseEntity<>(products, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    */
-
-
     @GetMapping("/getById")
     public Products getProductById(@RequestParam Long id) {
         return productService.getProductById(id);

@@ -50,8 +50,6 @@ public class ProductService  {
         return products.get(0);
     }
 
-
-
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }

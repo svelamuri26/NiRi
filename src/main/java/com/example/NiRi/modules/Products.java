@@ -85,7 +85,6 @@ public class Products {
         return cartItems;
     }
 
-    // Add this method with a different name to avoid ambiguity
     public void addCartItem(CartItem cartItem) {
         cartItems.add(cartItem);
         cartItem.setProduct(this);

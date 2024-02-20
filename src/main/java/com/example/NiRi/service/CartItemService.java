@@ -45,17 +45,12 @@ public class CartItemService {
     }
 
     public List<CartItem> getCartItemsBycartItemId(int cartItemId) {
-        System.out.println("order331cart::***********");
-        System.out.println(cartItemId);
         List<CartItem> cartItems = cartItemRepository.findListByCartItemId(cartItemId);
-        System.out.println("order332cart::***********");
-        System.out.println(cartItems);
         return cartItems;
     }
 
     public ResponseEntity<String> removeFromCart(int cartItemId,Long productId) {
         try {
-            //CartItem cartItem = cartItemRepository.findByCartItemId(cartItemId);
             List<CartItem> cartItems= getCartItemsBycartItemId(cartItemId);
             cartItems.stream().filter(cartItem -> cartItem.getProduct().getId().equals(productId)).findAny()
                     .ifPresent(cartItem -> cartItemRepository.delete(cartItem));
@@ -81,8 +76,6 @@ public class CartItemService {
     public ResponseEntity<String> addToCart(Long userId, CartItemRequest cartItemRequest) {
 
         try {
-            System.out.println("cartId22::***********");
-            System.out.println(cartItemRequest.getCartItemId());
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
@@ -90,14 +83,9 @@ public class CartItemService {
                     .orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + cartItemRequest.getProductId()));
 
             CartItem existingCartItem = cartItemRepository.findByUserAndProduct(user, product);
-            System.out.println("cartId555***********");
-            System.out.println(existingCartItem);
             if (existingCartItem != null) {
-                System.out.println("cartId222***********");
                 existingCartItem.setQuantity(existingCartItem.getQuantity() + cartItemRequest.getQuantity());
             } else {
-                System.out.println("cartid111***********");
-                System.out.println(cartItemRequest.getCartItemId());
                 CartItem cartItem = new CartItem();
                 cartItem.setUser(user);
                 cartItem.setProduct(product);
@@ -105,8 +93,6 @@ public class CartItemService {
                 cartItem.setStatus("Added");
                 cartItem.setOrderId(cartItemRequest.getOrderId());
                 cartItem.setCartItemId(cartItemRequest.getCartItemId());
-                //Order orderObject = null;<
-                //cartItem.setOrder(orderObject);
 
                 cartItemRepository.save(cartItem);
             }
@@ -145,7 +131,6 @@ public class CartItemService {
         orderRepository.save(order);
 
         for (CartItem item : items) {
-            //item.setOrderId(item);
             cartItemRepository.save(item);
         }
 

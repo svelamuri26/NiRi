@@ -50,7 +50,6 @@ public class Order {
         return orderId;
     }
 
-    //public void setId(int id) {this.id = id;}
 
     public User getUser() {
         return user;

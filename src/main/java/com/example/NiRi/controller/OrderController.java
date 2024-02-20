@@ -6,18 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import com.example.NiRi.repository.CartItemRepository;
 
 
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
-
 
     private final OrderService orderService;
 
@@ -36,41 +33,11 @@ public class OrderController {
         }
     }
 
-
-    /*
-    @PostMapping("/create")
-    public ResponseEntity<List<Order>> createOrder(@RequestBody List<CartItemPayload> cartItemPayloadList) {
-        try {
-            List<OrderCreationRequest> orderCreationRequests = cartItemPayloadList.stream()
-                    .map(cartItemPayload -> {
-                        OrderCreationRequest orderCreationRequest = new OrderCreationRequest();
-                        orderCreationRequest.setUserId(cartItemPayload.getUserId());
-                        List<Long> cartItemIds = cartItemPayload.getCartItems().stream()
-                                .map(CartItemRequest::getProductId)
-                                .collect(Collectors.toList());
-                        orderCreationRequest.setCartItemIds(cartItemIds);
-                        return orderCreationRequest;
-                    })
-                    .collect(Collectors.toList());
-
-            List<Order> createdOrders = orderCreationRequests.stream()
-                    .map(orderService::createOrder)
-                    .collect(Collectors.toList());
-
-            return new ResponseEntity<>(createdOrders, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }*/
-
-
     @PostMapping("/create")
     public ResponseEntity<Order> createOrder(@RequestBody OrderRequestPayload orderRequest) {
         try {
-            System.out.println("order11::***********");
             System.out.println(orderRequest.getCartItemId());
-            //OrderRequest orderRequest = new OrderRequest(orderRequestPayload.getUserId(),orderRequestPayload.getCartItemId(),orderRequestPayload.getOrderId());
-            Order order = orderService.convertCartToOrder(orderRequest.getUserId(),orderRequest.getCartItemId(),orderRequest.getOrderId());
+             Order order = orderService.convertCartToOrder(orderRequest.getUserId(),orderRequest.getCartItemId(),orderRequest.getOrderId());
 
             return  new ResponseEntity<>(order, HttpStatus.CREATED);
 
@@ -78,9 +45,6 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
 
     @GetMapping("/getByUserId")
     public List<Order> getOrdersByUserId(@RequestParam Long userId) {
@@ -103,5 +67,4 @@ public class OrderController {
     public void cancelOrder(@PathVariable Long id) {
         orderService.cancelOrder(id);
     }
-
 }
