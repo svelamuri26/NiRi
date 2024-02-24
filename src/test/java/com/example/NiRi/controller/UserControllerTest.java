@@ -65,7 +65,7 @@ class UserControllerTest {
     @Test
     void getUserById() {
         long userId = 1L;
-        User expectedUser = new User(); // Create a sample user for testing
+        User expectedUser = new User();
         when(userService.getUserById(userId)).thenReturn(expectedUser);
 
         User actualUser = userController.getUserById(userId);
