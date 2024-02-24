@@ -48,6 +48,7 @@ public class ProductController {
     public Products getProductByName(@RequestParam String name) {
         return productService.getProductByName(name);
     }
+
     @GetMapping("/getByPriceRange")
     public List<Products> getProductsByPriceRange(@RequestParam float minPrice, @RequestParam float maxPrice) {
         return productService.getProductsByPriceRange(minPrice, maxPrice);

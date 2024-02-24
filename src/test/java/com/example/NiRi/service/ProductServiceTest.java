@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.ArrayList;
 
 
-@SpringBootTest
+
 class ProductServiceTest {
 
     private ProductService productService;
@@ -30,13 +30,13 @@ class ProductServiceTest {
 
     @Test
     void saveProduct() {
-        Products productToSave = new Products(/* provide necessary data for product */);
+        Products productToSave = new Products();
         when(productRepository.save(any(Products.class))).thenReturn(productToSave);
 
         Products savedProduct = productService.saveProduct(productToSave);
 
         assertNotNull(savedProduct);
-        // Add more assertions as needed based on the expected behavior of your save method.
+
     }
 
     @Test
@@ -52,7 +52,7 @@ class ProductServiceTest {
     @Test
     void getProductById() {
         Long productId = 1L;
-        Products product = new Products(/* provide necessary data for product */);
+        Products product = new Products();
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
         Products result = productService.getProductById(productId);
@@ -63,8 +63,8 @@ class ProductServiceTest {
     @Test
     void updateProductDetails() {
         Long productId = 1L;
-        Products existingProduct = new Products(/* provide necessary data for existing product */);
-        Products updatedProduct = new Products(/* provide necessary data for updated product */);
+        Products existingProduct = new Products();
+        Products updatedProduct = new Products();
         when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
         when(productRepository.save(any(Products.class))).thenReturn(updatedProduct);
 
@@ -88,7 +88,7 @@ class ProductServiceTest {
     @Test
     void getProductByName() {
         String productName = "SampleProduct";
-        Products product = new Products(/* provide necessary data for product */);
+        Products product = new Products();
         List<Products> productList = new ArrayList<>();
         productList.add(product);
         when(productRepository.findByName(productName)).thenReturn(productList);
